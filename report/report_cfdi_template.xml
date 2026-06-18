@@ -15,11 +15,13 @@
     <template id="report_invoice_document_cfdi_aq" inherit_id="account.report_invoice_document">
 
         <!-- ============================================================ -->
-        <!-- Datos fiscales (tabla interna) en el bloque de información    -->
+        <!-- Datos fiscales (tabla propia) DEBAJO del bloque de info       -->
+        <!-- Se coloca DESPUÉS de la fila de columnas para no descuadrar    -->
+        <!-- el grid (col-auto/col-3) y evitar que se encime todo.         -->
         <!-- ============================================================ -->
-        <xpath expr="//div[@id='informations']" position="inside">
+        <xpath expr="//div[@id='informations']" position="after">
             <t t-set="d_cfdi" t-value="o._aq_get_cfdi_data()"/>
-            <div t-if="d_cfdi.get('uuid')" class="col-12 aq-cfdi mt-1" name="aq_cfdi_fiscal">
+            <div t-if="d_cfdi.get('uuid')" class="aq-cfdi mt-1" name="aq_cfdi_fiscal">
                 <style>
                     .aq-cfdi { font-size: 8px; color: #222; }
                     .aq-cfdi table { width: 100%; border-collapse: collapse; }

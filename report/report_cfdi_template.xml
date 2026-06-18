@@ -23,7 +23,7 @@
             <t t-set="d_cfdi" t-value="o._aq_get_cfdi_data()"/>
             <div t-if="d_cfdi.get('uuid')" class="aq-cfdi mt-1" name="aq_cfdi_fiscal">
                 <style>
-                    .aq-cfdi { font-size: 8px; color: #222; }
+                    .aq-cfdi { color: #222; }
                     .aq-cfdi table { width: 100%; border-collapse: collapse; }
                     .aq-cfdi .aq-tbl td { padding: 1px 8px 1px 0; vertical-align: top; }
                     .aq-cfdi .k { font-weight: bold; white-space: nowrap; }
@@ -42,16 +42,58 @@
                 </style>
                 <table class="aq-tbl">
                     <tr>
-                        <td class="k" style="width:13%">Folio fiscal:</td>
-                        <td style="width:50%"><span t-esc="d_cfdi['uuid']"/></td>
-                        <td class="k" style="width:12%">Uso CFDI:</td>
+                        <td class="k" style="width:14%">Folio fiscal:</td>
+                        <td style="width:36%"><span t-esc="d_cfdi['uuid']"/></td>
+                        <td class="k" style="width:16%">No. serie CSD emisor:</td>
+                        <td style="width:34%"><span t-esc="d_cfdi['no_certificado']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">RFC emisor:</td>
+                        <td><span t-esc="d_cfdi['rfc_emisor']"/></td>
+                        <td class="k">Nombre emisor:</td>
+                        <td><span t-esc="d_cfdi['nombre_emisor']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Régimen fiscal emisor:</td>
+                        <td><span t-esc="d_cfdi['regimen_emisor']"/> - <span t-esc="d_cfdi['regimen_emisor_nombre']"/></td>
+                        <td class="k">Lugar de expedición:</td>
+                        <td><span t-esc="d_cfdi['lugar_expedicion']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">RFC receptor:</td>
+                        <td><span t-esc="d_cfdi['rfc_receptor']"/></td>
+                        <td class="k">Nombre receptor:</td>
+                        <td><span t-esc="d_cfdi['nombre_receptor']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Domicilio fiscal receptor (CP):</td>
+                        <td><span t-esc="d_cfdi['cp_receptor']"/></td>
+                        <td class="k">Régimen fiscal receptor:</td>
+                        <td><span t-esc="d_cfdi['regimen_receptor']"/> - <span t-esc="d_cfdi['regimen_receptor_nombre']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Uso CFDI:</td>
                         <td><span t-esc="d_cfdi['uso_cfdi']"/> - <span t-esc="d_cfdi['uso_cfdi_nombre']"/></td>
+                        <td class="k">Efecto de comprobante:</td>
+                        <td><span t-esc="d_cfdi['tipo_comprobante']"/> - <span t-esc="d_cfdi['tipo_comprobante_nombre']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Fecha y hora de emisión:</td>
+                        <td><span t-esc="d_cfdi['fecha']"/></td>
+                        <td class="k">Serie / Folio:</td>
+                        <td><span t-esc="d_cfdi['serie']"/> <span t-esc="d_cfdi['folio']"/></td>
                     </tr>
                     <tr>
                         <td class="k">Forma de pago:</td>
                         <td><span t-esc="d_cfdi['forma_pago']"/></td>
                         <td class="k">Método de pago:</td>
                         <td><span t-esc="d_cfdi['metodo_pago']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Moneda:</td>
+                        <td><span t-esc="d_cfdi['moneda']"/></td>
+                        <td class="k">Exportación:</td>
+                        <td><span t-esc="d_cfdi['exportacion']"/></td>
                     </tr>
                 </table>
             </div>

@@ -23,6 +23,13 @@
             <t t-set="d_cfdi" t-value="o._aq_get_cfdi_data()"/>
         </xpath>
 
+        <!-- Oculta el bloque nativo de info (Fecha de factura / Fecha límite / -->
+        <!-- Origen / Referencia) SOLO cuando hay CFDI; esos datos pasan a la    -->
+        <!-- tabla fiscal de abajo. En facturas sin timbrar se conserva.         -->
+        <xpath expr="//div[@id='informations']" position="attributes">
+            <attribute name="t-att-style">d_cfdi.get('uuid') and 'display:none' or ''</attribute>
+        </xpath>
+
         <!-- ============================================================ -->
         <!-- Tabla fiscal única (4 columnas) bajo el bloque de información -->
         <!-- ============================================================ -->
@@ -48,6 +55,18 @@
                         <td><span t-esc="d_cfdi['serie_folio']"/></td>
                         <td class="k">Emisión</td>
                         <td><span t-esc="d_cfdi['fecha']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Fecha de factura</td>
+                        <td><span t-field="o.invoice_date"/></td>
+                        <td class="k">Fecha límite</td>
+                        <td><span t-field="o.invoice_date_due"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Origen</td>
+                        <td><span t-esc="o.invoice_origin"/></td>
+                        <td class="k">Referencia</td>
+                        <td><span t-esc="o.ref"/></td>
                     </tr>
                     <tr>
                         <td class="k">Tipo</td>

@@ -21,6 +21,14 @@
         <!-- demás bloques (son hermanos posteriores dentro de .page).        -->
         <xpath expr="//div[@id='informations']" position="before">
             <t t-set="d_cfdi" t-value="o._aq_get_cfdi_data()"/>
+            <!-- Reduce el texto del cuerpo del reporte base (tabla de líneas,    -->
+            <!-- referencia de pago, totales e importe con letra). El título h2   -->
+            <!-- usa rem y no se ve afectado; las tablas CFDI fijan su propio px.  -->
+            <style>
+                .page { font-size: 9px; }
+                .page .o_main_table th,
+                .page .o_main_table td { padding: 2px 4px; }
+            </style>
         </xpath>
 
         <!-- Oculta el bloque nativo de info (Fecha de factura / Fecha límite / -->

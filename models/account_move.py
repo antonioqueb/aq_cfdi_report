@@ -76,6 +76,36 @@ TIPO_COMPROBANTE = {
     "I": "Ingreso", "E": "Egreso", "T": "Traslado", "N": "Nómina", "P": "Pago",
 }
 
+METODO_PAGO = {
+    "PUE": "Pago en una sola exhibición",
+    "PPD": "Pago en parcialidades o diferido",
+}
+
+FORMA_PAGO = {
+    "01": "Efectivo",
+    "02": "Cheque nominativo",
+    "03": "Transferencia electrónica de fondos",
+    "04": "Tarjeta de crédito",
+    "05": "Monedero electrónico",
+    "06": "Dinero electrónico",
+    "08": "Vales de despensa",
+    "12": "Dación en pago",
+    "13": "Pago por subrogación",
+    "14": "Pago por consignación",
+    "15": "Condonación",
+    "17": "Compensación",
+    "23": "Novación",
+    "24": "Confusión",
+    "25": "Remisión de deuda",
+    "26": "Prescripción o caducidad",
+    "27": "A satisfacción del acreedor",
+    "28": "Tarjeta de débito",
+    "29": "Tarjeta de servicios",
+    "30": "Aplicación de anticipos",
+    "31": "Intermediario pagos",
+    "99": "Por definir",
+}
+
 
 class AccountMove(models.Model):
     _inherit = "account.move"
@@ -120,8 +150,14 @@ class AccountMove(models.Model):
         total = comp.get("Total", "0")
         fe = sello_cfdi[-8:] if sello_cfdi else ""
 
+        # El SAT espera el total con 6 decimales en la URL de validación.
+        try:
+            total_qr = "%.6f" % float(total)
+        except (TypeError, ValueError):
+            total_qr = total
+
         qr_value = "%s?id=%s&re=%s&rr=%s&tt=%s&fe=%s" % (
-            SAT_URL, uuid, rfc_emi, rfc_rec, total, fe,
+            SAT_URL, uuid, rfc_emi, rfc_rec, total_qr, fe,
         )
 
         # Conceptos
@@ -173,11 +209,21 @@ class AccountMove(models.Model):
         uso = g(rec, "UsoCFDI")
         tipo = comp.get("TipoDeComprobante", "")
 
+        serie = comp.get("Serie", "")
+        folio = comp.get("Folio", "")
+        serie_folio = ("%s%s" % (serie, folio)).strip()
+
+        forma_pago = comp.get("FormaPago", "")
+        metodo_pago = comp.get("MetodoPago", "")
+        forma_pago_label = ("%s - %s" % (forma_pago, FORMA_PAGO.get(forma_pago, forma_pago))) if forma_pago else ""
+        metodo_pago_label = ("%s - %s" % (metodo_pago, METODO_PAGO.get(metodo_pago, metodo_pago))) if metodo_pago else ""
+
         return {
             "uuid": uuid,
             "version": comp.get("Version", ""),
-            "serie": comp.get("Serie", ""),
-            "folio": comp.get("Folio", ""),
+            "serie": serie,
+            "folio": folio,
+            "serie_folio": serie_folio,
             "fecha": comp.get("Fecha", "").replace("T", " "),
             "sello_cfdi": sello_cfdi,
             "sello_sat": tfd.get("SelloSAT", ""),
@@ -201,8 +247,10 @@ class AccountMove(models.Model):
             "tipo_comprobante_nombre": TIPO_COMPROBANTE.get(tipo, tipo),
             "exportacion": comp.get("Exportacion", ""),
             "moneda": comp.get("Moneda", ""),
-            "forma_pago": comp.get("FormaPago", ""),
-            "metodo_pago": comp.get("MetodoPago", ""),
+            "forma_pago": forma_pago,
+            "forma_pago_label": forma_pago_label,
+            "metodo_pago": metodo_pago,
+            "metodo_pago_label": metodo_pago_label,
             "subtotal": comp.get("SubTotal", ""),
             "descuento": comp.get("Descuento", ""),
             "total": total,

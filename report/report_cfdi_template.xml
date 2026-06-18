@@ -33,9 +33,8 @@
                     .aq-cfdi-info { width: 100%; border-collapse: collapse; table-layout: fixed;
                         font-size: 8.8px; line-height: 1.25; color: #222; border: 1px solid #aaa; }
                     .aq-cfdi-info td { padding: 3px 5px; vertical-align: top;
-                        border-bottom: 1px solid #e1e1e1; word-break: normal; }
-                    .aq-cfdi-info .k { width: 16%; font-weight: bold; background: #f1f1f1;
-                        white-space: nowrap; }
+                        border-bottom: 1px solid #e1e1e1; word-break: normal; background: #f1f1f1; }
+                    .aq-cfdi-info .k { width: 16%; font-weight: bold; white-space: nowrap; }
                     .aq-cfdi-info td:nth-child(2),
                     .aq-cfdi-info td:nth-child(4) { width: 35%; }
                 </style>

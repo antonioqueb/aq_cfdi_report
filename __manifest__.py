@@ -8,7 +8,6 @@
     "category": "Accounting/Localizations",
     "depends": ["account"],
     "data": [
-        "report/report_action.xml",
         "report/report_cfdi_template.xml",
     ],
     "external_dependencies": {"python": ["qrcode"]},

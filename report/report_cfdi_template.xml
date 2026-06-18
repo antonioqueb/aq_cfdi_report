@@ -1,235 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="report_cfdi_aq">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-set="d" t-value="o._aq_get_cfdi_data()"/>
-                <div class="page">
-                    <style>
-                        .aq { font-family: Arial, Helvetica, sans-serif; color:#222; font-size:8px; }
-                        .aq h1 { font-size:15px; margin:0; font-weight:bold; }
-                        .aq .muted { color:#666; }
-                        .aq table { width:100%; border-collapse:collapse; }
-                        .aq .hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-                        .aq .hdr img { max-height:55px; max-width:160px; }
-                        .aq .hdr .co { text-align:right; }
-                        .aq .fiscal td { vertical-align:top; padding:1px 6px 1px 0; }
-                        .aq .fiscal .k { font-weight:bold; white-space:nowrap; }
-                        .aq .sec { font-weight:bold; font-size:9px; margin:8px 0 3px; }
-                        .aq .cpt th { background:#e9e9ee; border:1px solid #b9b9c2; padding:3px 4px; font-size:7.5px; text-align:center; }
-                        .aq .cpt td { border:1px solid #b9b9c2; padding:3px 4px; font-size:7.5px; }
-                        .aq .cpt .num { text-align:right; }
-                        .aq .cpt .ctr { text-align:center; }
-                        .aq .imp th { background:#f3f3f6; border:1px solid #d0d0d8; padding:2px 4px; font-size:7px; }
-                        .aq .imp td { border:1px solid #d0d0d8; padding:2px 4px; font-size:7px; }
-                        .aq .pay td { padding:1px 4px 1px 0; vertical-align:top; }
-                        .aq .pay .k { font-weight:bold; }
-                        .aq .tot td { padding:3px 6px; }
-                        .aq .tot .lbl { text-align:right; }
-                        .aq .tot .val { text-align:right; width:90px; }
-                        .aq .tot .grand { font-weight:bold; border-top:1px solid #888; }
-                        .aq .seal-h { background:#7a7a85; color:#fff; text-align:center; font-weight:bold; font-size:7.5px; padding:2px; margin-top:8px; }
-                        .aq .seal { font-size:6.5px; word-break:break-all; line-height:1.25; padding:2px 1px; }
-                        .aq .qrbox { width:115px; vertical-align:top; }
-                        .aq .qrbox img { width:110px; height:110px; }
-                        .aq .footer-note { text-align:center; font-size:7px; color:#555; margin-top:10px; border-top:1px solid #ccc; padding-top:5px; }
-                    </style>
+    <!--
+        Extiende el reporte BASE de factura (account.report_invoice_document),
+        que es el que se envía por correo y el que se imprime con el botón
+        principal. Respeta el external layout configurado (bubble, boxed, etc.).
+        Solo se inyecta:
+          - Bloque de datos fiscales CFDI en la parte superior.
+          - Sellos digitales, cadena original y QR en la parte inferior.
+        Todo se muestra únicamente cuando la factura ya está timbrada.
+    -->
+    <template id="report_invoice_document_cfdi_aq" inherit_id="account.report_invoice_document">
 
-                    <div class="aq">
-                        <!-- Encabezado -->
-                        <div class="hdr">
-                            <div>
-                                <img t-if="o.company_id.logo"
-                                     t-att-src="image_data_uri(o.company_id.logo)"/>
-                            </div>
-                            <div class="co">
-                                <h1 t-esc="(d.get('nombre_emisor') or o.company_id.name or '').upper()"/>
-                                <div class="muted">RFC: <span t-esc="d.get('rfc_emisor') or o.company_id.vat"/></div>
-                                <div class="muted" t-if="o.company_id.city"><span t-esc="o.company_id.city"/>, <span t-esc="o.company_id.state_id.name"/></div>
-                            </div>
-                        </div>
+        <!-- ============================================================ -->
+        <!-- Parte superior: datos fiscales del CFDI                       -->
+        <!-- ============================================================ -->
+        <xpath expr="//div[@id='informations']" position="after">
+            <t t-set="d_cfdi" t-value="o._aq_get_cfdi_data()"/>
+            <div t-if="d_cfdi.get('uuid')" class="aq-cfdi aq-cfdi-top mt-2">
+                <style>
+                    .aq-cfdi { font-size: 9px; color: #222; }
+                    .aq-cfdi table { width: 100%; border-collapse: collapse; }
+                    .aq-cfdi-top table td { vertical-align: top; padding: 1px 6px 1px 0; }
+                    .aq-cfdi-top .k { font-weight: bold; white-space: nowrap; }
+                    .aq-cfdi-title { font-weight: bold; font-size: 9.5px;
+                        text-transform: uppercase; letter-spacing: .3px;
+                        border-bottom: 1px solid #b9b9c2; padding-bottom: 2px; margin-bottom: 3px; }
+                    .aq-cfdi-seals .seal-h { background: #7a7a85; color: #fff;
+                        text-align: center; font-weight: bold; font-size: 8px;
+                        padding: 2px; margin-top: 8px; }
+                    .aq-cfdi-seals .seal { font-size: 6.5px; word-break: break-all;
+                        line-height: 1.25; padding: 2px 1px; }
+                    .aq-cfdi-seals .qrbox { width: 120px; vertical-align: top; }
+                    .aq-cfdi-seals .qrbox img { width: 115px; height: 115px; }
+                    .aq-cfdi-seals .cert td { padding: 1px 4px 1px 0; vertical-align: top; }
+                    .aq-cfdi-note { text-align: center; font-size: 7.5px; color: #555;
+                        margin-top: 10px; border-top: 1px solid #ccc; padding-top: 5px; }
+                </style>
+                <div class="aq-cfdi-title">Datos fiscales (CFDI 4.0)</div>
+                <table>
+                    <tr>
+                        <td class="k" style="width:15%">Folio fiscal (UUID):</td>
+                        <td style="width:35%"><span t-esc="d_cfdi['uuid']"/></td>
+                        <td class="k" style="width:17%">No. serie CSD:</td>
+                        <td style="width:33%"><span t-esc="d_cfdi['no_certificado']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">RFC emisor:</td>
+                        <td><span t-esc="d_cfdi['rfc_emisor']"/></td>
+                        <td class="k">Régimen emisor:</td>
+                        <td><span t-esc="d_cfdi['regimen_emisor']"/> - <span t-esc="d_cfdi['regimen_emisor_nombre']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">RFC receptor:</td>
+                        <td><span t-esc="d_cfdi['rfc_receptor']"/></td>
+                        <td class="k">Régimen receptor:</td>
+                        <td><span t-esc="d_cfdi['regimen_receptor']"/> - <span t-esc="d_cfdi['regimen_receptor_nombre']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Uso CFDI:</td>
+                        <td><span t-esc="d_cfdi['uso_cfdi']"/> - <span t-esc="d_cfdi['uso_cfdi_nombre']"/></td>
+                        <td class="k">CP receptor:</td>
+                        <td><span t-esc="d_cfdi['cp_receptor']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Efecto de comprobante:</td>
+                        <td><span t-esc="d_cfdi['tipo_comprobante']"/> - <span t-esc="d_cfdi['tipo_comprobante_nombre']"/></td>
+                        <td class="k">Exportación:</td>
+                        <td><span t-esc="d_cfdi['exportacion']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Serie / Folio:</td>
+                        <td><span t-esc="d_cfdi['serie']"/> <span t-esc="d_cfdi['folio']"/></td>
+                        <td class="k">Lugar / fecha emisión:</td>
+                        <td><span t-esc="d_cfdi['lugar_expedicion']"/> · <span t-esc="d_cfdi['fecha']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Forma de pago:</td>
+                        <td><span t-esc="d_cfdi['forma_pago']"/></td>
+                        <td class="k">Método de pago:</td>
+                        <td><span t-esc="d_cfdi['metodo_pago']"/></td>
+                    </tr>
+                </table>
+            </div>
+        </xpath>
 
-                        <t t-if="d.get('uuid')">
-                        <!-- Datos fiscales -->
-                        <table class="fiscal">
-                            <tr>
-                                <td class="k" style="width:14%">RFC emisor:</td>
-                                <td style="width:36%"><span t-esc="d['rfc_emisor']"/></td>
-                                <td class="k" style="width:16%">Folio fiscal:</td>
-                                <td style="width:34%"><span t-esc="d['uuid']"/></td>
-                            </tr>
-                            <tr>
-                                <td class="k">Nombre emisor:</td>
-                                <td><span t-esc="d['nombre_emisor']"/></td>
-                                <td class="k">No. serie CSD:</td>
-                                <td><span t-esc="d['no_certificado']"/></td>
-                            </tr>
-                            <tr>
-                                <td class="k">RFC receptor:</td>
-                                <td><span t-esc="d['rfc_receptor']"/></td>
-                                <td class="k">Lugar / fecha emisión:</td>
-                                <td><span t-esc="d['lugar_expedicion']"/> · <span t-esc="d['fecha']"/></td>
-                            </tr>
-                            <tr>
-                                <td class="k">Nombre receptor:</td>
-                                <td><span t-esc="d['nombre_receptor']"/></td>
-                                <td class="k">Efecto de comprobante:</td>
-                                <td><span t-esc="d['tipo_comprobante_nombre']"/></td>
-                            </tr>
-                            <tr>
-                                <td class="k">CP receptor:</td>
-                                <td><span t-esc="d['cp_receptor']"/></td>
-                                <td class="k">Régimen fiscal emisor:</td>
-                                <td><span t-esc="d['regimen_emisor_nombre']"/></td>
-                            </tr>
-                            <tr>
-                                <td class="k">Régimen receptor:</td>
-                                <td><span t-esc="d['regimen_receptor_nombre']"/></td>
-                                <td class="k">Exportación:</td>
-                                <td><span t-esc="d['exportacion']"/></td>
-                            </tr>
-                            <tr>
-                                <td class="k">Uso CFDI:</td>
-                                <td><span t-esc="d['uso_cfdi']"/> - <span t-esc="d['uso_cfdi_nombre']"/></td>
-                                <td class="k">Serie / Folio:</td>
-                                <td><span t-esc="d['serie']"/> <span t-esc="d['folio']"/></td>
-                            </tr>
-                        </table>
+        <!-- ============================================================ -->
+        <!-- Parte inferior: sellos, cadena original y QR                 -->
+        <!-- ============================================================ -->
+        <xpath expr="//div[hasclass('page')]" position="inside">
+            <t t-set="d_seal" t-value="o._aq_get_cfdi_data()"/>
+            <div t-if="d_seal.get('uuid')" class="aq-cfdi aq-cfdi-seals mt-3">
+                <div class="seal-h">Sello digital del CFDI</div>
+                <div class="seal"><span t-esc="d_seal['sello_cfdi']"/></div>
 
-                        <!-- Conceptos -->
-                        <div class="sec">Conceptos</div>
-                        <table class="cpt">
-                            <thead>
+                <div class="seal-h">Sello digital del SAT</div>
+                <div class="seal"><span t-esc="d_seal['sello_sat']"/></div>
+
+                <div class="seal-h">Cadena original del complemento de certificación digital del SAT</div>
+                <table>
+                    <tr>
+                        <td class="qrbox">
+                            <img t-if="d_seal.get('qr_b64')"
+                                 t-att-src="'data:image/png;base64,%s' % d_seal['qr_b64']"/>
+                        </td>
+                        <td style="vertical-align:top">
+                            <div class="seal"><span t-esc="d_seal['cadena_sat']"/></div>
+                            <table class="cert" style="margin-top:4px">
                                 <tr>
-                                    <th>Clave prod/serv</th>
-                                    <th>No. ident.</th>
-                                    <th>Cantidad</th>
-                                    <th>Clave unidad</th>
-                                    <th>Unidad</th>
-                                    <th>Valor unitario</th>
-                                    <th>Importe</th>
-                                    <th>Descuento</th>
-                                    <th>Objeto imp.</th>
+                                    <td class="k" style="width:32%">RFC proveedor certif.:</td>
+                                    <td><span t-esc="d_seal['rfc_pac']"/></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="d['conceptos']" t-as="c">
-                                    <tr>
-                                        <td class="ctr"><span t-esc="c['clave_prod']"/></td>
-                                        <td class="ctr"><span t-esc="c['no_id']"/></td>
-                                        <td class="num"><span t-esc="c['cantidad']"/></td>
-                                        <td class="ctr"><span t-esc="c['clave_unidad']"/></td>
-                                        <td><span t-esc="c['unidad']"/></td>
-                                        <td class="num"><span t-esc="c['valor_unitario']"/></td>
-                                        <td class="num"><span t-esc="c['importe']"/></td>
-                                        <td class="num"><span t-esc="c['descuento']"/></td>
-                                        <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="9" style="padding:0">
-                                            <table style="width:100%; border:0">
-                                                <tr>
-                                                    <td style="border:0; width:55%; vertical-align:top; padding:3px 4px">
-                                                        <b>Descripción: </b><span t-esc="c['descripcion']"/>
-                                                    </td>
-                                                    <td style="border:0; width:45%; padding:2px 4px">
-                                                        <table class="imp" t-if="c['traslados']">
-                                                            <tr>
-                                                                <th>Impuesto</th><th>Base</th><th>Factor</th><th>Tasa/Cuota</th><th>Importe</th>
-                                                            </tr>
-                                                            <tr t-foreach="c['traslados']" t-as="t">
-                                                                <td><span t-esc="t['impuesto_nombre']"/></td>
-                                                                <td class="num" style="text-align:right"><span t-esc="t['base']"/></td>
-                                                                <td><span t-esc="t['tipo_factor']"/></td>
-                                                                <td style="text-align:right"><span t-esc="t['tasa_disp']"/></td>
-                                                                <td style="text-align:right"><span t-esc="t['importe']"/></td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                        </table>
+                                <tr>
+                                    <td class="k">No. serie certificado SAT:</td>
+                                    <td><span t-esc="d_seal['no_certificado_sat']"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="k">Fecha y hora de certificación:</td>
+                                    <td><span t-esc="d_seal['fecha_timbrado']"/></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
-                        <!-- Pago + Totales -->
-                        <table style="margin-top:8px">
-                            <tr>
-                                <td style="width:55%; vertical-align:top">
-                                    <table class="pay">
-                                        <tr><td class="k" style="width:38%">Moneda:</td><td><span t-esc="d['moneda']"/></td></tr>
-                                        <tr><td class="k">Forma de pago:</td><td><span t-esc="d['forma_pago']"/></td></tr>
-                                        <tr><td class="k">Método de pago:</td><td><span t-esc="d['metodo_pago']"/></td></tr>
-                                    </table>
-                                </td>
-                                <td style="width:45%; vertical-align:top">
-                                    <table class="tot">
-                                        <tr>
-                                            <td class="lbl">Subtotal</td>
-                                            <td class="val"><span t-esc="o.amount_untaxed" t-options='{"widget":"monetary","display_currency":o.currency_id}'/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="lbl">Impuestos trasladados</td>
-                                            <td class="val"><span t-esc="o.amount_tax" t-options='{"widget":"monetary","display_currency":o.currency_id}'/></td>
-                                        </tr>
-                                        <tr class="grand">
-                                            <td class="lbl">Total</td>
-                                            <td class="val"><span t-esc="o.amount_total" t-options='{"widget":"monetary","display_currency":o.currency_id}'/></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <!-- Sellos / QR / Cadena -->
-                        <div class="seal-h">Sello digital del CFDI</div>
-                        <div class="seal"><span t-esc="d['sello_cfdi']"/></div>
-
-                        <div class="seal-h">Sello digital del SAT</div>
-                        <div class="seal"><span t-esc="d['sello_sat']"/></div>
-
-                        <div class="seal-h">Cadena original del complemento de certificación digital del SAT</div>
-                        <table>
-                            <tr>
-                                <td class="qrbox">
-                                    <img t-if="d.get('qr_b64')" t-att-src="'data:image/png;base64,%s' % d['qr_b64']"/>
-                                </td>
-                                <td style="vertical-align:top">
-                                    <div class="seal"><span t-esc="d['cadena_sat']"/></div>
-                                    <table style="margin-top:4px">
-                                        <tr>
-                                            <td class="k" style="width:30%">RFC proveedor certif.:</td>
-                                            <td><span t-esc="d['rfc_pac']"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="k">No. serie certificado SAT:</td>
-                                            <td><span t-esc="d['no_certificado_sat']"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="k">Fecha y hora de certificación:</td>
-                                            <td><span t-esc="d['fecha_timbrado']"/></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <div class="footer-note">
-                            Este documento es una representación impresa de un CFDI.<br/>
-                            El logotipo de esta factura es responsabilidad única y exclusiva de quien la emite; el SAT queda relevado de cualquier obligación que derive de ello.
-                        </div>
-                        </t>
-
-                        <t t-if="not d.get('uuid')">
-                            <div class="footer-note" style="margin-top:30px">
-                                Esta factura aún no está timbrada. La representación CFDI se genera al adjuntarse el XML timbrado.
-                            </div>
-                        </t>
-                    </div>
+                <div class="aq-cfdi-note">
+                    Este documento es una representación impresa de un CFDI.<br/>
+                    El logotipo de esta factura es responsabilidad única y exclusiva de quien la emite;
+                    el SAT queda relevado de cualquier obligación que derive de ello.
                 </div>
-            </t>
-        </t>
+            </div>
+        </xpath>
+
     </template>
 </odoo>

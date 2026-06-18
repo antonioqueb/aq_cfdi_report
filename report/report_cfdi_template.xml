@@ -116,70 +116,46 @@
             <div t-if="d_cfdi.get('uuid')" class="aq-cpt" name="aq_cfdi_conceptos">
                 <style>
                     .aq-cpt { width: 100%; margin-top: 4px; color: #222; }
-                    .aq-cpt table { width: 100%; border-collapse: collapse; }
+                    .aq-cpt table { width: 100%; border-collapse: collapse; table-layout: fixed; }
                     .aq-cpt thead th { background: #e9e9ee; border: 1px solid #b9b9c2;
                         padding: 2px 3px; font-size: 7px; text-align: center; }
-                    .aq-cpt td { border: 1px solid #b9b9c2; padding: 2px 3px; font-size: 7px; }
+                    .aq-cpt td { border: 1px solid #b9b9c2; padding: 2px 3px; font-size: 7px;
+                        vertical-align: top; word-break: break-word; }
                     .aq-cpt .num { text-align: right; }
                     .aq-cpt .ctr { text-align: center; }
-                    .aq-cpt .imp { width: 100%; border-collapse: collapse; }
-                    .aq-cpt .imp th { background: #f3f3f6; border: 1px solid #d0d0d8;
-                        padding: 1px 3px; font-size: 6.5px; }
-                    .aq-cpt .imp td { border: 1px solid #d0d0d8; padding: 1px 3px; font-size: 6.5px; }
                 </style>
                 <table>
                     <thead>
                         <tr>
-                            <th>Clave prod/serv</th>
-                            <th>No. ident.</th>
-                            <th>Cantidad</th>
-                            <th>Clave unidad</th>
-                            <th>Unidad</th>
-                            <th>Valor unitario</th>
-                            <th>Importe</th>
-                            <th>Descuento</th>
-                            <th>Objeto imp.</th>
+                            <th style="width:9%">Clave SAT</th>
+                            <th style="width:8%">No. ident.</th>
+                            <th style="width:27%">Descripción</th>
+                            <th style="width:7%">Cantidad</th>
+                            <th style="width:11%">Unidad</th>
+                            <th style="width:9%">V. unitario</th>
+                            <th style="width:9%">Importe</th>
+                            <th style="width:7%">Desc.</th>
+                            <th style="width:4%">Obj.</th>
+                            <th style="width:9%">Impuestos</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <t t-foreach="d_cfdi['conceptos']" t-as="c">
-                            <tr>
-                                <td class="ctr"><span t-esc="c['clave_prod']"/></td>
-                                <td class="ctr"><span t-esc="c['no_id']"/></td>
-                                <td class="num"><span t-esc="c['cantidad']"/></td>
-                                <td class="ctr"><span t-esc="c['clave_unidad']"/></td>
-                                <td><span t-esc="c['unidad']"/></td>
-                                <td class="num"><span t-esc="c['valor_unitario']"/></td>
-                                <td class="num"><span t-esc="c['importe']"/></td>
-                                <td class="num"><span t-esc="c['descuento']"/></td>
-                                <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
-                            </tr>
-                            <tr>
-                                <td colspan="9" style="padding:0">
-                                    <table style="width:100%; border:0">
-                                        <tr>
-                                            <td style="border:0; width:60%; vertical-align:top; padding:2px 3px">
-                                                <b>Descripción: </b><span t-esc="c['descripcion']"/>
-                                            </td>
-                                            <td style="border:0; width:40%; padding:1px 3px">
-                                                <table class="imp" t-if="c['traslados']">
-                                                    <tr>
-                                                        <th>Impuesto</th><th>Base</th><th>Factor</th><th>Tasa/Cuota</th><th>Importe</th>
-                                                    </tr>
-                                                    <tr t-foreach="c['traslados']" t-as="t">
-                                                        <td><span t-esc="t['impuesto_nombre']"/></td>
-                                                        <td class="num"><span t-esc="t['base']"/></td>
-                                                        <td class="ctr"><span t-esc="t['tipo_factor']"/></td>
-                                                        <td class="num"><span t-esc="t['tasa_disp']"/></td>
-                                                        <td class="num"><span t-esc="t['importe']"/></td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </t>
+                        <tr t-foreach="d_cfdi['conceptos']" t-as="c">
+                            <td class="ctr"><span t-esc="c['clave_prod']"/></td>
+                            <td class="ctr"><span t-esc="c['no_id']"/></td>
+                            <td><span t-esc="c['descripcion']"/></td>
+                            <td class="num"><span t-esc="c['cantidad']"/></td>
+                            <td><span t-esc="c['clave_unidad']"/> <span t-esc="c['unidad']"/></td>
+                            <td class="num"><span t-esc="c['valor_unitario']"/></td>
+                            <td class="num"><span t-esc="c['importe']"/></td>
+                            <td class="num"><span t-esc="c['descuento']"/></td>
+                            <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
+                            <td class="imp">
+                                <t t-foreach="c['traslados']" t-as="t">
+                                    <span t-esc="t['impuesto_nombre']"/> <span t-esc="t['tasa_disp']"/>: <span t-esc="t['importe']"/><br/>
+                                </t>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

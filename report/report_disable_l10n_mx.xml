@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Desactiva la vista nativa del CFDI de la localización mexicana
+        (l10n_mx_edi) para usar en su lugar nuestra propia representación
+        (report_cfdi_template.xml).
+
+        OJO: esa vista nativa aportaba DOS cosas: los campos Uso CFDI / Forma de
+        pago / Método de pago en el bloque de información, y el pie con sellos /
+        cadena / QR. Como aquí se desactiva, nuestra plantilla vuelve a incluir
+        TODA esa información para no perder nada.
+    -->
+    <record id="l10n_mx_edi.report_invoice_document" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

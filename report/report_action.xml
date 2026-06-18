@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_cfdi_aq" model="report.paperformat">
+        <field name="name">CFDI Alphaqueb A4</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_cfdi_aq" model="ir.actions.report">
+        <field name="name">Factura CFDI (Alphaqueb)</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">aq_cfdi_report.report_cfdi_aq</field>
+        <field name="report_file">aq_cfdi_report.report_cfdi_aq</field>
+        <field name="paperformat_id" ref="paperformat_cfdi_aq"/>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'CFDI - %s' % (object.name or '').replace('/', '_')</field>
+    </record>
+
+</odoo>

@@ -262,14 +262,14 @@ class AccountMove(models.Model):
             "cadena_sat": cadena_sat,
             # Líneas ya cortadas para el PDF (wkhtmltopdf no rompe cadenas
             # largas sin espacios de forma confiable).
-            "sello_cfdi_lines": self._aq_split_text(sello_cfdi, 100),
-            "sello_sat_lines": self._aq_split_text(sello_sat, 100),
-            "cadena_sat_lines": self._aq_split_text(cadena_sat, 100),
+            "sello_cfdi_lines": self._aq_split_text(sello_cfdi, 200),
+            "sello_sat_lines": self._aq_split_text(sello_sat, 200),
+            "cadena_sat_lines": self._aq_split_text(cadena_sat, 200),
             "qr_value": qr_value,
             "qr_b64": self._aq_qr_b64(qr_value),
         }
 
-    def _aq_split_text(self, value, size=100):
+    def _aq_split_text(self, value, size=200):
         """Parte una cadena larga en líneas de ancho fijo para el PDF."""
         value = value or ""
         return [value[i:i + size] for i in range(0, len(value), size)]

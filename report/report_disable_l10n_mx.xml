@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Desactiva el pie de página del CFDI que la localización mexicana
+        (l10n_mx_edi) inyecta en account.report_invoice_document, para que en
+        su lugar se muestre nuestra propia versión (report_cfdi_template.xml).
+
+        Si al actualizar el módulo aparece "External ID not found:
+        l10n_mx_edi.report_invoice_document", significa que en esta base la
+        vista tiene otro id; obtén el correcto con:
+
+            env['ir.ui.view'].search(
+                [('inherit_id.key', '=', 'account.report_invoice_document')]
+            ).mapped('key')
+
+        y ajusta el "id" de abajo.
+    -->
+    <record id="l10n_mx_edi.report_invoice_document" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

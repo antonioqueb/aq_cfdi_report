@@ -6,9 +6,8 @@
     "author": "Alphaqueb Consulting SAS",
     "license": "LGPL-3",
     "category": "Accounting/Localizations",
-    "depends": ["account", "l10n_mx_edi"],
+    "depends": ["account"],
     "data": [
-        "report/report_disable_l10n_mx.xml",
         "report/report_cfdi_template.xml",
     ],
     "external_dependencies": {"python": ["qrcode"]},

@@ -211,12 +211,16 @@ class AccountMove(models.Model):
 
         serie = comp.get("Serie", "")
         folio = comp.get("Folio", "")
-        serie_folio = ("%s%s" % (serie, folio)).strip()
+        # Para el documento conviene el nombre de Odoo (INV/2026/00002); el XML
+        # trae serie y folio por separado.
+        serie_folio = self.name or ("%s%s" % (serie, folio)).strip()
 
         forma_pago = comp.get("FormaPago", "")
         metodo_pago = comp.get("MetodoPago", "")
         forma_pago_label = ("%s - %s" % (forma_pago, FORMA_PAGO.get(forma_pago, forma_pago))) if forma_pago else ""
         metodo_pago_label = ("%s - %s" % (metodo_pago, METODO_PAGO.get(metodo_pago, metodo_pago))) if metodo_pago else ""
+
+        sello_sat = tfd.get("SelloSAT", "")
 
         return {
             "uuid": uuid,
@@ -226,7 +230,7 @@ class AccountMove(models.Model):
             "serie_folio": serie_folio,
             "fecha": comp.get("Fecha", "").replace("T", " "),
             "sello_cfdi": sello_cfdi,
-            "sello_sat": tfd.get("SelloSAT", ""),
+            "sello_sat": sello_sat,
             "no_certificado": comp.get("NoCertificado", ""),
             "no_certificado_sat": tfd.get("NoCertificadoSAT", ""),
             "rfc_pac": tfd.get("RfcProvCertif", ""),
@@ -256,9 +260,19 @@ class AccountMove(models.Model):
             "total": total,
             "conceptos": conceptos,
             "cadena_sat": cadena_sat,
+            # Líneas ya cortadas para el PDF (wkhtmltopdf no rompe cadenas
+            # largas sin espacios de forma confiable).
+            "sello_cfdi_lines": self._aq_split_text(sello_cfdi, 115),
+            "sello_sat_lines": self._aq_split_text(sello_sat, 115),
+            "cadena_sat_lines": self._aq_split_text(cadena_sat, 115),
             "qr_value": qr_value,
             "qr_b64": self._aq_qr_b64(qr_value),
         }
+
+    def _aq_split_text(self, value, size=115):
+        """Parte una cadena larga en líneas de ancho fijo para el PDF."""
+        value = value or ""
+        return [value[i:i + size] for i in range(0, len(value), size)]
 
     def _aq_qr_b64(self, value):
         if not qrcode or not value:

@@ -27,13 +27,15 @@
                     .aq-cfdi table { width: 100%; border-collapse: collapse; }
                     .aq-cfdi .aq-tbl td { padding: 1px 8px 1px 0; vertical-align: top; }
                     .aq-cfdi .k { font-weight: bold; white-space: nowrap; }
-                    .aq-seals { font-size: 8px; color: #222; }
-                    .aq-seals table { width: 100%; border-collapse: collapse; }
+                    .aq-seals { font-size: 8px; color: #222; width: 100%; }
+                    .aq-seals table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+                    .aq-seals td { word-break: break-all; overflow-wrap: anywhere; }
                     .aq-seals .seal-h { background: #7a7a85; color: #fff;
                         text-align: center; font-weight: bold; font-size: 7px;
                         padding: 1px; margin-top: 6px; }
-                    .aq-seals .seal { font-size: 6px; word-break: break-all;
-                        line-height: 1.2; padding: 1px; }
+                    .aq-seals .seal { font-size: 6px; line-height: 1.2; padding: 1px;
+                        width: 100%; max-width: 100%; display: block;
+                        word-break: break-all; overflow-wrap: anywhere; word-wrap: break-word; }
                     .aq-seals .qrbox { width: 95px; vertical-align: top; }
                     .aq-seals .qrbox img { width: 90px; height: 90px; }
                     .aq-seals .info-extra { font-size: 6px; line-height: 1.3; margin-top: 4px; }

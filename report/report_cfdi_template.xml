@@ -7,13 +7,13 @@
 
         La vista nativa del CFDI (l10n_mx_edi) se desactiva en
         report_disable_l10n_mx.xml; aquí se reconstruye todo con formato propio:
-          - Datos del CFDI una sola vez (sin volver a parsear el XML / regenerar
-            el QR).
-          - Dos tarjetas compactas (Datos CFDI / Fiscal-Pago) bajo el bloque de
-            información.
-          - Pie indivisible (page-break-inside: avoid) con QR, información extra,
-            sellos y cadena original.
-        Todo solo cuando la factura está timbrada.
+          - Datos del CFDI una sola vez (sin re-parsear el XML / regenerar QR).
+          - Dos tarjetas compactas (Datos CFDI / Fiscal-Pago).
+          - Pie indivisible con QR, info extra, sellos y cadena original.
+
+        Tamaños homogéneos (~8px) y las cadenas largas (sellos / cadena) van
+        dentro de tablas con table-layout:fixed + word-break:break-all, que es
+        lo único que wkhtmltopdf respeta para no desbordar los márgenes.
     -->
     <template id="report_invoice_document_cfdi_aq" inherit_id="account.report_invoice_document">
 
@@ -29,16 +29,16 @@
         <xpath expr="//div[@id='informations']" position="after">
             <div t-if="d_cfdi.get('uuid')" class="aq-cfdi-card mt-1" name="aq_cfdi_fiscal">
                 <style>
-                    .aq-cfdi-card { font-size: 8px; line-height: 1.15; color: #222;
-                        margin-top: 4px; margin-bottom: 6px; }
+                    .aq-cfdi-card { font-size: 8px; line-height: 1.25; color: #222;
+                        margin: 4px 0 6px; }
                     .aq-cfdi-wrap { width: 100%; border-collapse: collapse; table-layout: fixed; }
                     .aq-mini { width: 100%; border-collapse: collapse; table-layout: fixed;
                         border: 1px solid #bbb; }
-                    .aq-mini th { font-size: 8px; padding: 2px 4px; background: #eeeeee;
+                    .aq-mini th { font-size: 8px; padding: 2px 5px; background: #eeeeee;
                         text-align: left; border-bottom: 1px solid #bbb; }
-                    .aq-mini td { font-size: 7.5px; padding: 2px 4px; vertical-align: top;
+                    .aq-mini td { font-size: 8px; padding: 2px 5px; vertical-align: top;
                         border-bottom: 1px solid #e5e5e5; word-break: break-word; }
-                    .aq-mini td:first-child { width: 32%; font-weight: bold; white-space: nowrap; }
+                    .aq-mini td:first-child { width: 34%; font-weight: bold; white-space: nowrap; }
                 </style>
                 <table class="aq-cfdi-wrap">
                     <tr>
@@ -73,20 +73,22 @@
         <xpath expr="//div[hasclass('page')]" position="inside">
             <div t-if="d_cfdi.get('uuid')" class="aq-seals mt-1">
                 <style>
-                    .aq-seals { font-size: 6px; line-height: 1.1; color: #222; width: 100%;
+                    .aq-seals { font-size: 8px; line-height: 1.2; color: #222; width: 100%;
                         margin-top: 6px; page-break-inside: avoid; break-inside: avoid; }
                     .aq-seal-layout { width: 100%; border-collapse: collapse;
                         table-layout: fixed; margin-bottom: 3px; }
-                    .aq-qr { width: 72px; vertical-align: top; }
-                    .aq-qr img { width: 68px; height: 68px; }
-                    .aq-extra { vertical-align: top; font-size: 6px; line-height: 1.2;
+                    .aq-qr { width: 80px; vertical-align: top; }
+                    .aq-qr img { width: 76px; height: 76px; }
+                    .aq-extra { vertical-align: top; font-size: 8px; line-height: 1.3;
                         word-break: break-word; }
-                    .aq-seal-title { font-weight: bold; font-size: 6.2px; background: #e8e8e8;
-                        padding: 1px 3px; margin-top: 2px; }
-                    .aq-seal-text { font-family: monospace; font-size: 5.3px; line-height: 1.05;
-                        word-break: break-all; overflow-wrap: anywhere; padding: 1px 2px; }
-                    .aq-note { text-align: center; font-size: 6px; margin-top: 3px;
-                        border-top: 1px solid #ccc; padding-top: 2px; }
+                    .aq-seal-title { font-weight: bold; font-size: 8px; background: #e8e8e8;
+                        padding: 1px 4px; margin-top: 3px; }
+                    /* table-layout:fixed obliga a la celda al ancho de página -> wrap real */
+                    .aq-seal-box { width: 100%; table-layout: fixed; border-collapse: collapse; }
+                    .aq-seal-box td { font-family: monospace; font-size: 7px; line-height: 1.2;
+                        word-break: break-all; padding: 1px 3px; }
+                    .aq-note { text-align: center; font-size: 8px; margin-top: 4px;
+                        border-top: 1px solid #ccc; padding-top: 3px; }
                 </style>
                 <table class="aq-seal-layout">
                     <tr>
@@ -106,13 +108,13 @@
                 </table>
 
                 <div class="aq-seal-title">Sello digital del CFDI</div>
-                <div class="aq-seal-text"><span t-esc="d_cfdi['sello_cfdi']"/></div>
+                <table class="aq-seal-box"><tr><td><span t-esc="d_cfdi['sello_cfdi']"/></td></tr></table>
 
                 <div class="aq-seal-title">Sello digital del SAT</div>
-                <div class="aq-seal-text"><span t-esc="d_cfdi['sello_sat']"/></div>
+                <table class="aq-seal-box"><tr><td><span t-esc="d_cfdi['sello_sat']"/></td></tr></table>
 
                 <div class="aq-seal-title">Cadena original del complemento de certificación digital del SAT</div>
-                <div class="aq-seal-text"><span t-esc="d_cfdi['cadena_sat']"/></div>
+                <table class="aq-seal-box"><tr><td><span t-esc="d_cfdi['cadena_sat']"/></td></tr></table>
 
                 <div class="aq-note">Este documento es una representación impresa de un CFDI.</div>
             </div>

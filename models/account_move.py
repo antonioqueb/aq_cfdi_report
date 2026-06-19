@@ -262,9 +262,9 @@ class AccountMove(models.Model):
             "cadena_sat": cadena_sat,
             # Líneas ya cortadas para el PDF (wkhtmltopdf no rompe cadenas
             # largas sin espacios de forma confiable).
-            "sello_cfdi_lines": self._aq_split_text(sello_cfdi, 200),
-            "sello_sat_lines": self._aq_split_text(sello_sat, 200),
-            "cadena_sat_lines": self._aq_split_text(cadena_sat, 200),
+            "sello_cfdi_lines": self._aq_split_text(sello_cfdi, 90),
+            "sello_sat_lines": self._aq_split_text(sello_sat, 90),
+            "cadena_sat_lines": self._aq_split_text(cadena_sat, 90),
             "qr_value": qr_value,
             "qr_b64": self._aq_qr_b64(qr_value),
         }

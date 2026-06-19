@@ -25,7 +25,7 @@
             <!-- referencia de pago, totales e importe con letra). El título h2   -->
             <!-- usa rem y no se ve afectado; las tablas CFDI fijan su propio px.  -->
             <style>
-                .page { font-size: 9px; }
+                .page { font-size: 11px; }
                 .page .o_main_table th,
                 .page .o_main_table td { padding: 2px 4px; }
             </style>
@@ -46,7 +46,7 @@
                 <style>
                     .aq-cfdi { margin-top: 8px; margin-bottom: 10px; }
                     .aq-cfdi-info { width: 100%; border-collapse: collapse; table-layout: fixed;
-                        font-size: 8.8px; line-height: 1.25; color: #222; border: 1px solid #aaa; }
+                        font-size: 11px; line-height: 1.25; color: #222; border: 1px solid #aaa; }
                     .aq-cfdi-info td { padding: 3px 5px; vertical-align: top;
                         border-bottom: 1px solid #e1e1e1; word-break: normal; background: #f1f1f1; }
                     .aq-cfdi-info .k { width: 16%; font-weight: bold; white-space: nowrap; }
@@ -118,8 +118,8 @@
                     .aq-cpt { width: 100%; margin-top: 4px; color: #222; }
                     .aq-cpt table { width: 100%; border-collapse: collapse; table-layout: fixed; }
                     .aq-cpt thead th { background: #e9e9ee; border: 1px solid #b9b9c2;
-                        padding: 2px 3px; font-size: 7px; text-align: center; }
-                    .aq-cpt td { border: 1px solid #b9b9c2; padding: 2px 3px; font-size: 7px;
+                        padding: 2px 3px; font-size: 11px; text-align: center; }
+                    .aq-cpt td { border: 1px solid #b9b9c2; padding: 2px 3px; font-size: 11px;
                         vertical-align: top; word-break: break-word; }
                     .aq-cpt .num { text-align: right; }
                     .aq-cpt .ctr { text-align: center; }
@@ -167,18 +167,18 @@
         <xpath expr="//div[hasclass('page')]" position="inside">
             <div t-if="d_cfdi.get('uuid')" class="aq-seals mt-1">
                 <style>
-                    .aq-seals { width: 100%; margin-top: 8px; font-size: 6px; line-height: 1.15;
+                    .aq-seals { width: 100%; margin-top: 8px; font-size: 11px; line-height: 1.2;
                         color: #222; page-break-inside: avoid; break-inside: avoid; }
                     .aq-seal-layout { width: 100%; border-collapse: collapse; table-layout: fixed;
                         border: 1px solid #999; margin-bottom: 3px; }
                     .aq-qr { width: 74px; vertical-align: top; padding: 2px; }
                     .aq-qr img { width: 68px; height: 68px; }
-                    .aq-extra { vertical-align: top; font-size: 6.8px; line-height: 1.15; padding: 3px 5px; }
-                    .aq-seal-title { font-weight: bold; font-size: 6.8px; background: #eeeeee;
+                    .aq-extra { vertical-align: top; font-size: 11px; line-height: 1.2; padding: 3px 5px; }
+                    .aq-seal-title { font-weight: bold; font-size: 11px; background: #eeeeee;
                         border: 1px solid #999; border-bottom: 0; padding: 2px 4px; margin-top: 2px; }
-                    .aq-seal-text { font-family: monospace; font-size: 5.8px; line-height: 1.15;
+                    .aq-seal-text { font-family: monospace; font-size: 11px; line-height: 1.2;
                         border: 1px solid #999; padding: 2px 4px; word-break: normal; white-space: normal; }
-                    .aq-note { text-align: center; font-size: 6.8px; margin-top: 3px; }
+                    .aq-note { text-align: center; font-size: 11px; margin-top: 3px; }
                 </style>
                 <table class="aq-seal-layout">
                     <tr>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Branding Alphaqueb sobre el reporte base de ventas
+        (sale.report_saleorder_document). Cubre cotización Y orden de venta,
+        porque ambas comparten esta plantilla. NO crea un reporte nuevo:
+        solo hereda/edita el base. Misma identidad que el CFDI:
+        Bebas (títulos), Oxanium (tablas), Roboto (cuerpo). Acentos
+        lima #B9E856 / púrpura #723FA0 / negro. Sin rellenos grises.
+    -->
+    <template id="report_saleorder_document_aq" inherit_id="sale.report_saleorder_document">
+
+        <!-- Estilos de marca, una sola vez -->
+        <xpath expr="//div[@id='informations']" position="before">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Oxanium:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap');
+
+                .page { font-family: 'Roboto', Arial, sans-serif; font-size: 11px; color: #111111; }
+
+                /* Título (Cotización / Orden de venta): Bebas + acento lima */
+                .page h2 { font-family: 'Bebas Kai','Bebas Neue', sans-serif;
+                    letter-spacing: 1px; text-transform: uppercase; color: #000000;
+                    padding-left: 10px; border-left: 4px solid #B9E856; line-height: 1; }
+
+                /* Barra de marca (lima + segmento púrpura) */
+                .aq-top { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 2px 0 9px; }
+                .aq-top td { height: 4px; line-height: 4px; font-size: 0; padding: 0; }
+                .aq-top .l { background: #B9E856; }
+                .aq-top .p { background: #723FA0; width: 130px; }
+
+                /* Tabla de líneas con el mismo estilo que Conceptos del CFDI */
+                .page .o_main_table { font-family: 'Oxanium', Arial, sans-serif; }
+                .page .o_main_table thead th { background: #000000 !important; color: #ffffff !important;
+                    border-color: #000000 !important; border-bottom: 2px solid #B9E856 !important;
+                    text-transform: uppercase; letter-spacing: .3px; }
+            </style>
+        </xpath>
+
+        <!-- Barra de marca al inicio de la página, antes del título -->
+        <xpath expr="//h2" position="before">
+            <table class="aq-top"><tr><td class="l">&#160;</td><td class="p">&#160;</td></tr></table>
+        </xpath>
+    </template>
+</odoo>

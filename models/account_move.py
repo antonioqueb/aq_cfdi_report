@@ -202,12 +202,17 @@ class AccountMove(models.Model):
                     "tasa_disp": tasa_disp,
                     "importe": m2(t.get("Importe", "")),
                 })
+            clave_unidad = c.get("ClaveUnidad", "")
+            unidad = c.get("Unidad", "")
+            # "LH - HORAS"; si falta alguno, mostramos solo el que exista.
+            unidad_disp = " - ".join(p for p in (clave_unidad, unidad) if p)
             conceptos.append({
                 "clave_prod": c.get("ClaveProdServ", ""),
                 "no_id": c.get("NoIdentificacion", ""),
                 "cantidad": m2(c.get("Cantidad", "")),
-                "clave_unidad": c.get("ClaveUnidad", ""),
-                "unidad": c.get("Unidad", ""),
+                "clave_unidad": clave_unidad,
+                "unidad": unidad,
+                "unidad_disp": unidad_disp,
                 "descripcion": c.get("Descripcion", ""),
                 "valor_unitario": m2(c.get("ValorUnitario", "")),
                 "importe": m2(c.get("Importe", "")),

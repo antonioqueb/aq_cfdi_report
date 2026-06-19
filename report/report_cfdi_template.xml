@@ -176,9 +176,10 @@
                     <thead>
                         <tr>
                             <th style="width:9%">Clave SAT</th>
-                            <th style="width:35%">Descripción</th>
+                            <th style="width:32%">Descripción</th>
                             <th style="width:7%">Cantidad</th>
-                            <th style="width:11%">Unidad</th>
+                            <th style="width:6%">Clave unidad</th>
+                            <th style="width:8%">Unidad</th>
                             <th style="width:9%">V. unitario</th>
                             <th style="width:9%">Importe</th>
                             <th t-if="d_cfdi.get('tiene_descuento')" style="width:7%">Desc.</th>
@@ -187,7 +188,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <t t-set="cols" t-value="d_cfdi.get('tiene_descuento') and 9 or 8"/>
+                        <t t-set="cols" t-value="d_cfdi.get('tiene_descuento') and 10 or 9"/>
                         <tr t-foreach="d_cfdi['filas']" t-as="c">
                             <t t-if="c['tipo_fila'] == 'section'">
                                 <td class="sec" t-att-colspan="cols"><span t-esc="c['texto']"/></td>
@@ -199,7 +200,8 @@
                                 <td class="ctr"><span t-esc="c['clave_prod']"/></td>
                                 <td><span t-esc="c['descripcion']"/></td>
                                 <td class="num"><span t-esc="c['cantidad']"/></td>
-                                <td><span t-esc="c['clave_unidad']"/> <span t-esc="c['unidad']"/></td>
+                                <td class="ctr"><span t-esc="c['clave_unidad']"/></td>
+                                <td><span t-esc="c['unidad']"/></td>
                                 <td class="num"><span t-esc="c['valor_unitario']"/></td>
                                 <td class="num"><span t-esc="c['importe']"/></td>
                                 <td t-if="d_cfdi.get('tiene_descuento')" class="num"><span t-esc="c['descuento']"/></td>
@@ -283,7 +285,7 @@
                     </t>
                 </div>
 
-                <div class="aq-note">Representación impresa de un CFDI</div>
+                <div class="aq-note">Este documento es una representación impresa de un CFDI</div>
             </div>
         </xpath>
 

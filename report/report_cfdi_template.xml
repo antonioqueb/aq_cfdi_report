@@ -158,9 +158,9 @@
                     .aq-cpt table { width: 100%; border-collapse: collapse; table-layout: fixed;
                         font-family: 'Oxanium', Arial, sans-serif; }
                     .aq-cpt thead th { background: #000000; color: #ffffff; border: 0;
-                        border-bottom: 2px solid #B9E856; padding: 4px 3px; font-size: 9px;
+                        border-bottom: 2px solid #B9E856; padding: 4px 3px; font-size: 10px;
                         letter-spacing: .3px; text-transform: uppercase; text-align: center; }
-                    .aq-cpt td { border: 1px solid #f1f1f3; padding: 3px; font-size: 9px;
+                    .aq-cpt td { border: 1px solid #f1f1f3; padding: 3px; font-size: 10px;
                         vertical-align: top; word-break: break-word; background: #ffffff; }
                     .aq-cpt .num { text-align: right; }
                     .aq-cpt .ctr { text-align: center; }
@@ -173,8 +173,7 @@
                     <thead>
                         <tr>
                             <th style="width:9%">Clave SAT</th>
-                            <th style="width:8%">No. ident.</th>
-                            <th style="width:27%">Descripción</th>
+                            <th style="width:35%">Descripción</th>
                             <th style="width:7%">Cantidad</th>
                             <th style="width:11%">Unidad</th>
                             <th style="width:9%">V. unitario</th>
@@ -187,7 +186,6 @@
                     <tbody>
                         <tr t-foreach="d_cfdi['conceptos']" t-as="c">
                             <td class="ctr"><span t-esc="c['clave_prod']"/></td>
-                            <td class="ctr"><span t-esc="c['no_id']"/></td>
                             <td><span t-esc="c['descripcion']"/></td>
                             <td class="num"><span t-esc="c['cantidad']"/></td>
                             <td><span t-esc="c['clave_unidad']"/> <span t-esc="c['unidad']"/></td>
@@ -197,9 +195,7 @@
                             <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
                             <td class="imp">
                                 <t t-foreach="c['traslados']" t-as="t">
-                                    <span t-esc="t['impuesto_nombre']"/> <span t-esc="t['tipo']"/><br/>
-                                    Base <span t-esc="t['base']"/><br/>
-                                    <span t-esc="t['tipo_factor']"/> <span t-esc="t['tasa_disp']"/>: <span t-esc="t['importe']"/><br/>
+                                    <span t-esc="t['tasa_disp']"/><br/>
                                 </t>
                             </td>
                         </tr>

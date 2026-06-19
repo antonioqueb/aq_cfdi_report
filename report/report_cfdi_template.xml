@@ -1,62 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
-        Extiende el reporte BASE de factura (account.report_invoice_document),
-        que es el que se envía por correo y el que se imprime con el botón
-        principal. Respeta el external layout configurado (bubble, boxed, etc.).
+        Extiende el reporte BASE de factura (account.report_invoice_document).
+        Identidad Alphaqueb sobre fondo BLANCO predominante:
+          - Tipografías: Bebas Kai/Neue (títulos), Oxanium (tablas/datos), Roboto (cuerpo).
+          - Acentos: gris #3C3B44 (barras), lima #B9E856 (líneas), púrpura #723FA0 (énfasis).
+          - El QR se mantiene negro/blanco (legibilidad SAT) -> el .py NO cambia.
 
-        La vista nativa del CFDI (l10n_mx_edi) se desactiva en
-        report_disable_l10n_mx.xml; aquí se reconstruye todo con formato propio:
-          - Datos del CFDI una sola vez (sin re-parsear el XML / regenerar QR).
-          - Tabla fiscal única de 4 columnas (legible, ~9px).
-          - Pie indivisible con QR, info extra, sellos y cadena original.
-
-        Los sellos y la cadena se imprimen como LÍNEAS ya cortadas desde Python
-        (_aq_split_text): wkhtmltopdf no rompe de forma confiable cadenas largas
-        sin espacios, así que no dependemos de word-break/overflow-wrap.
+        Sellos y cadena se imprimen como LÍNEAS ya cortadas desde Python
+        (_aq_split_text): wkhtmltopdf no rompe cadenas largas sin espacios.
     -->
     <template id="report_invoice_document_cfdi_aq" inherit_id="account.report_invoice_document">
 
-        <!-- Extrae los datos del CFDI UNA sola vez; queda en scope para los -->
-        <!-- demás bloques (son hermanos posteriores dentro de .page).        -->
+        <!-- Extrae los datos del CFDI UNA sola vez + estilos globales / barra reutilizable -->
         <xpath expr="//div[@id='informations']" position="before">
             <t t-set="d_cfdi" t-value="o._aq_get_cfdi_data()"/>
-            <!-- Reduce el texto del cuerpo del reporte base (tabla de líneas,    -->
-            <!-- referencia de pago, totales e importe con letra). El título h2   -->
-            <!-- usa rem y no se ve afectado; las tablas CFDI fijan su propio px.  -->
             <style>
-                .page { font-size: 11px; }
+                @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Oxanium:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap');
+
+                .page { font-family: 'Roboto', Arial, sans-serif; font-size: 11px; color: #1a1a1a; }
                 .page .o_main_table th,
                 .page .o_main_table td { padding: 2px 4px; }
+
+                /* Barra de sección reutilizable (gris + acento lima) */
+                .aq-bar { background: #3C3B44; color: #ffffff;
+                    font-family: 'Bebas Kai','Bebas Neue', sans-serif;
+                    font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
+                    padding: 4px 9px; border-left: 4px solid #B9E856; line-height: 1.15; }
             </style>
         </xpath>
 
-        <!-- Oculta el bloque nativo de info (Fecha de factura / Fecha límite / -->
-        <!-- Origen / Referencia) SOLO cuando hay CFDI; esos datos pasan a la    -->
-        <!-- tabla fiscal de abajo. En facturas sin timbrar se conserva.         -->
+        <!-- Oculta el bloque nativo de info SOLO cuando hay CFDI -->
         <xpath expr="//div[@id='informations']" position="attributes">
             <attribute name="t-att-style">d_cfdi.get('uuid') and 'display:none' or ''</attribute>
         </xpath>
 
         <!-- ============================================================ -->
-        <!-- Tabla fiscal única (4 columnas) bajo el bloque de información -->
+        <!-- Tabla fiscal única (4 columnas)                              -->
         <!-- ============================================================ -->
         <xpath expr="//div[@id='informations']" position="after">
             <div t-if="d_cfdi.get('uuid')" class="aq-cfdi mt-2" name="aq_cfdi_fiscal">
                 <style>
                     .aq-cfdi { margin-top: 8px; margin-bottom: 10px; }
                     .aq-cfdi-info { width: 100%; border-collapse: collapse; table-layout: fixed;
-                        font-size: 11px; line-height: 1.25; color: #222; border: 1px solid #aaa; }
-                    .aq-cfdi-info td { padding: 3px 5px; vertical-align: top;
-                        border-bottom: 1px solid #e1e1e1; word-break: normal; background: #f1f1f1; }
-                    .aq-cfdi-info .k { width: 16%; font-weight: bold; white-space: nowrap; }
+                        font-family: 'Oxanium', Arial, sans-serif; font-size: 11px; line-height: 1.25;
+                        color: #1a1a1a; border: 1px solid #d9d9de; border-top: 0; }
+                    .aq-cfdi-info td { padding: 3px 6px; vertical-align: top;
+                        border-bottom: 1px solid #ececef; border-right: 1px solid #ececef;
+                        word-break: normal; background: #ffffff; }
+                    .aq-cfdi-info .k { width: 16%; font-weight: 700; white-space: nowrap; color: #000000; }
+                    .aq-cfdi-info .uuid { color: #723FA0; font-weight: 700; letter-spacing: .3px; }
                     .aq-cfdi-info td:nth-child(2),
                     .aq-cfdi-info td:nth-child(4) { width: 35%; }
                 </style>
+                <div class="aq-bar">Comprobante Fiscal Digital · CFDI</div>
                 <table class="aq-cfdi-info">
                     <tr>
                         <td class="k">Folio fiscal</td>
-                        <td colspan="3"><span t-esc="d_cfdi['uuid']"/></td>
+                        <td colspan="3"><span class="uuid" t-esc="d_cfdi['uuid']"/></td>
                     </tr>
                     <tr>
                         <td class="k">RFC emisor</td>
@@ -133,8 +134,7 @@
         </xpath>
 
         <!-- ============================================================ -->
-        <!-- Conceptos CFDI (con clave SAT, clave unidad, objeto imp.)     -->
-        <!-- Se oculta la tabla nativa de líneas y se usa la del XML.      -->
+        <!-- Conceptos CFDI                                               -->
         <!-- ============================================================ -->
         <xpath expr="//table[hasclass('o_main_table')]" position="attributes">
             <attribute name="t-att-style">d_cfdi.get('uuid') and 'display:none' or ''</attribute>
@@ -143,15 +143,20 @@
         <xpath expr="//table[hasclass('o_main_table')]" position="before">
             <div t-if="d_cfdi.get('uuid')" class="aq-cpt" name="aq_cfdi_conceptos">
                 <style>
-                    .aq-cpt { width: 100%; margin-top: 4px; color: #222; }
-                    .aq-cpt table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-                    .aq-cpt thead th { background: #e9e9ee; border: 1px solid #b9b9c2;
-                        padding: 2px 3px; font-size: 7px; text-align: center; }
-                    .aq-cpt td { border: 1px solid #b9b9c2; padding: 2px 3px; font-size: 7px;
-                        vertical-align: top; word-break: break-word; }
+                    .aq-cpt { width: 100%; margin-top: 6px; color: #1a1a1a; }
+                    .aq-cpt .aq-bar { font-size: 13px; }
+                    .aq-cpt table { width: 100%; border-collapse: collapse; table-layout: fixed;
+                        font-family: 'Oxanium', Arial, sans-serif; }
+                    .aq-cpt thead th { background: #3C3B44; color: #ffffff;
+                        border: 1px solid #3C3B44; border-bottom: 2px solid #B9E856;
+                        padding: 3px 3px; font-size: 7px; letter-spacing: .2px;
+                        text-transform: uppercase; text-align: center; }
+                    .aq-cpt td { border: 1px solid #ececef; padding: 2px 3px; font-size: 7px;
+                        vertical-align: top; word-break: break-word; background: #ffffff; }
                     .aq-cpt .num { text-align: right; }
                     .aq-cpt .ctr { text-align: center; }
                 </style>
+                <div class="aq-bar">Conceptos</div>
                 <table>
                     <thead>
                         <tr>
@@ -197,18 +202,26 @@
         <xpath expr="//div[hasclass('page')]" position="inside">
             <div t-if="d_cfdi.get('uuid')" class="aq-seals mt-1">
                 <style>
-                    .aq-seals { width: 100%; margin-top: 8px; font-size: 11px; line-height: 1.2;
-                        color: #222; page-break-inside: avoid; break-inside: avoid; }
+                    .aq-seals { width: 100%; margin-top: 10px; font-family: 'Roboto', Arial, sans-serif;
+                        font-size: 11px; line-height: 1.2; color: #1a1a1a;
+                        page-break-inside: avoid; break-inside: avoid; }
                     .aq-seal-layout { width: 100%; border-collapse: collapse; table-layout: fixed;
-                        border: 1px solid #999; margin-bottom: 3px; }
-                    .aq-qr { width: 74px; vertical-align: top; padding: 2px; }
-                    .aq-qr img { width: 68px; height: 68px; }
-                    .aq-extra { vertical-align: top; font-size: 13px; line-height: 1.9; padding: 5px 7px; }
-                    .aq-seal-title { font-weight: bold; font-size: 11px; background: #eeeeee;
-                        border: 1px solid #999; border-bottom: 0; padding: 2px 4px; margin-top: 2px; }
+                        border: 1px solid #d9d9de; margin-bottom: 4px; }
+                    .aq-qr { width: 150px; vertical-align: top; padding: 4px; background: #ffffff;
+                        border-right: 1px solid #ececef; }
+                    .aq-qr img { width: 144px; height: 144px; }
+                    .aq-extra { vertical-align: top; font-family: 'Oxanium', Arial, sans-serif;
+                        font-size: 11px; line-height: 1.8; padding: 6px 9px; background: #ffffff; }
+                    .aq-extra b { color: #723FA0; }
+                    .aq-seal-title { font-family: 'Bebas Kai','Bebas Neue', sans-serif; font-weight: 400;
+                        font-size: 13px; letter-spacing: .6px; text-transform: uppercase;
+                        background: #3C3B44; color: #ffffff; border-left: 4px solid #B9E856;
+                        padding: 3px 9px; margin-top: 4px; }
                     .aq-seal-text { font-family: monospace; font-size: 11px; line-height: 1.2;
-                        border: 1px solid #999; padding: 2px 4px; word-break: normal; white-space: normal; }
-                    .aq-note { text-align: center; font-size: 11px; margin-top: 3px; }
+                        border: 1px solid #d9d9de; padding: 3px 6px; word-break: normal;
+                        white-space: normal; background: #ffffff; }
+                    .aq-note { text-align: center; font-size: 10px; color: #6a6a6a; margin-top: 4px;
+                        padding-top: 4px; border-top: 1px solid #ececef; }
                 </style>
                 <table class="aq-seal-layout">
                     <tr>

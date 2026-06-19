@@ -10,7 +10,7 @@
     -->
     <template id="report_saleorder_document_aq" inherit_id="sale.report_saleorder_document">
 
-        <!-- Estilos de marca, una sola vez -->
+        <!-- Estilos de marca + barra superior, justo antes del bloque de info -->
         <xpath expr="//div[@id='informations']" position="before">
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Oxanium:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap');
@@ -18,7 +18,7 @@
                 .page { font-family: 'Roboto', Arial, sans-serif; font-size: 11px; color: #111111; }
 
                 /* Título (Cotización / Orden de venta): Bebas + acento lima */
-                .page h2 { font-family: 'Bebas Kai','Bebas Neue', sans-serif;
+                .page h1, .page h2 { font-family: 'Bebas Kai','Bebas Neue', sans-serif;
                     letter-spacing: 1px; text-transform: uppercase; color: #000000;
                     padding-left: 10px; border-left: 4px solid #B9E856; line-height: 1; }
 
@@ -34,10 +34,6 @@
                     border-color: #000000 !important; border-bottom: 2px solid #B9E856 !important;
                     text-transform: uppercase; letter-spacing: .3px; }
             </style>
-        </xpath>
-
-        <!-- Barra de marca al inicio de la página, antes del título -->
-        <xpath expr="//h2" position="before">
             <table class="aq-top"><tr><td class="l">&#160;</td><td class="p">&#160;</td></tr></table>
         </xpath>
     </template>

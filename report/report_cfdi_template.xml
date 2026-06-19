@@ -158,9 +158,9 @@
                     .aq-cpt table { width: 100%; border-collapse: collapse; table-layout: fixed;
                         font-family: 'Oxanium', Arial, sans-serif; }
                     .aq-cpt thead th { background: #000000; color: #ffffff; border: 0;
-                        border-bottom: 2px solid #B9E856; padding: 4px 3px; font-size: 7px;
+                        border-bottom: 2px solid #B9E856; padding: 4px 3px; font-size: 9px;
                         letter-spacing: .3px; text-transform: uppercase; text-align: center; }
-                    .aq-cpt td { border: 1px solid #f1f1f3; padding: 3px; font-size: 7px;
+                    .aq-cpt td { border: 1px solid #f1f1f3; padding: 3px; font-size: 9px;
                         vertical-align: top; word-break: break-word; background: #ffffff; }
                     .aq-cpt .num { text-align: right; }
                     .aq-cpt .ctr { text-align: center; }

@@ -2,7 +2,7 @@
 {
     "name": "Alphaqueb - Representación impresa CFDI",
     "summary": "Formato limpio de factura CFDI 4.0 con QR, leyendo el XML timbrado (PAC-agnóstico).",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "author": "Alphaqueb Consulting SAS",
     "license": "LGPL-3",
     "category": "Accounting/Localizations",

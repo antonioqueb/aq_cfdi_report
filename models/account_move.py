@@ -76,6 +76,24 @@ TIPO_COMPROBANTE = {
     "I": "Ingreso", "E": "Egreso", "T": "Traslado", "N": "Nómina", "P": "Pago",
 }
 
+EXPORTACION = {
+    "01": "No aplica",
+    "02": "Definitiva con clave A1",
+    "03": "Temporal",
+    "04": "Definitiva con clave distinta a A1",
+}
+
+MONEDA = {
+    "MXN": "Peso Mexicano",
+    "USD": "Dólar estadounidense",
+    "EUR": "Euro",
+    "XXX": "Sin moneda",
+}
+
+TIPO_FACTOR = {
+    "Tasa": "Tasa", "Cuota": "Cuota", "Exento": "Exento",
+}
+
 METODO_PAGO = {
     "PUE": "Pago en una sola exhibición",
     "PPD": "Pago en parcialidades o diferido",
@@ -177,7 +195,8 @@ class AccountMove(models.Model):
                 traslados.append({
                     "impuesto": t.get("Impuesto", ""),
                     "impuesto_nombre": IMP_NAMES.get(t.get("Impuesto", ""), t.get("Impuesto", "")),
-                    "base": t.get("Base", ""),
+                    "tipo": "Traslado",
+                    "base": m2(t.get("Base", "")),
                     "tipo_factor": t.get("TipoFactor", ""),
                     "tasa": tasa,
                     "tasa_disp": tasa_disp,
@@ -252,7 +271,9 @@ class AccountMove(models.Model):
             "tipo_comprobante": tipo,
             "tipo_comprobante_nombre": TIPO_COMPROBANTE.get(tipo, tipo),
             "exportacion": comp.get("Exportacion", ""),
+            "exportacion_nombre": EXPORTACION.get(comp.get("Exportacion", ""), comp.get("Exportacion", "")),
             "moneda": comp.get("Moneda", ""),
+            "moneda_nombre": MONEDA.get(comp.get("Moneda", ""), comp.get("Moneda", "")),
             "forma_pago": forma_pago,
             "forma_pago_label": forma_pago_label,
             "metodo_pago": metodo_pago,

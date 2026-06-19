@@ -59,6 +59,42 @@
                         <td colspan="3"><span t-esc="d_cfdi['uuid']"/></td>
                     </tr>
                     <tr>
+                        <td class="k">RFC emisor</td>
+                        <td><span t-esc="d_cfdi['rfc_emisor']"/></td>
+                        <td class="k">Nombre emisor</td>
+                        <td><span t-esc="d_cfdi['nombre_emisor']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Régimen fiscal emisor</td>
+                        <td><span t-esc="d_cfdi['regimen_emisor']"/> - <span t-esc="d_cfdi['regimen_emisor_nombre']"/></td>
+                        <td class="k">No. serie del CSD</td>
+                        <td><span t-esc="d_cfdi['no_certificado']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">RFC receptor</td>
+                        <td><span t-esc="d_cfdi['rfc_receptor']"/></td>
+                        <td class="k">Nombre receptor</td>
+                        <td><span t-esc="d_cfdi['nombre_receptor']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">CP receptor</td>
+                        <td><span t-esc="d_cfdi['cp_receptor']"/></td>
+                        <td class="k">Régimen fiscal receptor</td>
+                        <td><span t-esc="d_cfdi['regimen_receptor']"/> - <span t-esc="d_cfdi['regimen_receptor_nombre']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Uso CFDI</td>
+                        <td><span t-esc="d_cfdi['uso_cfdi']"/> - <span t-esc="d_cfdi['uso_cfdi_nombre']"/></td>
+                        <td class="k">Efecto de comprobante</td>
+                        <td><span t-esc="d_cfdi['tipo_comprobante']"/> - <span t-esc="d_cfdi['tipo_comprobante_nombre']"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Exportación</td>
+                        <td><span t-esc="d_cfdi['exportacion']"/> - <span t-esc="d_cfdi['exportacion_nombre']"/></td>
+                        <td class="k">Lugar de expedición</td>
+                        <td><span t-esc="d_cfdi['lugar_expedicion']"/></td>
+                    </tr>
+                    <tr>
                         <td class="k">Serie / Folio</td>
                         <td><span t-esc="d_cfdi['serie_folio']"/></td>
                         <td class="k">Emisión</td>
@@ -77,16 +113,10 @@
                         <td><span t-esc="o.ref"/></td>
                     </tr>
                     <tr>
-                        <td class="k">Tipo</td>
-                        <td><span t-esc="d_cfdi['tipo_comprobante']"/> - <span t-esc="d_cfdi['tipo_comprobante_nombre']"/></td>
                         <td class="k">Moneda</td>
-                        <td><span t-esc="d_cfdi['moneda']"/></td>
-                    </tr>
-                    <tr>
-                        <td class="k">Régimen emisor</td>
-                        <td><span t-esc="d_cfdi['regimen_emisor']"/> - <span t-esc="d_cfdi['regimen_emisor_nombre']"/></td>
-                        <td class="k">Uso CFDI</td>
-                        <td><span t-esc="d_cfdi['uso_cfdi']"/> - <span t-esc="d_cfdi['uso_cfdi_nombre']"/></td>
+                        <td><span t-esc="d_cfdi['moneda']"/> - <span t-esc="d_cfdi['moneda_nombre']"/></td>
+                        <td class="k">Certificación</td>
+                        <td><span t-esc="d_cfdi['fecha_timbrado']"/></td>
                     </tr>
                     <tr>
                         <td class="k">Forma de pago</td>
@@ -95,10 +125,8 @@
                         <td><span t-esc="d_cfdi['metodo_pago_label']"/></td>
                     </tr>
                     <tr>
-                        <td class="k">CSD emisor</td>
-                        <td><span t-esc="d_cfdi['no_certificado']"/></td>
                         <td class="k">CSD SAT</td>
-                        <td><span t-esc="d_cfdi['no_certificado_sat']"/></td>
+                        <td colspan="3"><span t-esc="d_cfdi['no_certificado_sat']"/></td>
                     </tr>
                 </table>
             </div>
@@ -118,8 +146,8 @@
                     .aq-cpt { width: 100%; margin-top: 4px; color: #222; }
                     .aq-cpt table { width: 100%; border-collapse: collapse; table-layout: fixed; }
                     .aq-cpt thead th { background: #e9e9ee; border: 1px solid #b9b9c2;
-                        padding: 2px 3px; font-size: 11px; text-align: center; }
-                    .aq-cpt td { border: 1px solid #b9b9c2; padding: 2px 3px; font-size: 11px;
+                        padding: 2px 3px; font-size: 7px; text-align: center; }
+                    .aq-cpt td { border: 1px solid #b9b9c2; padding: 2px 3px; font-size: 7px;
                         vertical-align: top; word-break: break-word; }
                     .aq-cpt .num { text-align: right; }
                     .aq-cpt .ctr { text-align: center; }
@@ -152,7 +180,9 @@
                             <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
                             <td class="imp">
                                 <t t-foreach="c['traslados']" t-as="t">
-                                    <span t-esc="t['impuesto_nombre']"/> <span t-esc="t['tasa_disp']"/>: <span t-esc="t['importe']"/><br/>
+                                    <span t-esc="t['impuesto_nombre']"/> <span t-esc="t['tipo']"/><br/>
+                                    Base <span t-esc="t['base']"/><br/>
+                                    <span t-esc="t['tipo_factor']"/> <span t-esc="t['tasa_disp']"/>: <span t-esc="t['importe']"/><br/>
                                 </t>
                             </td>
                         </tr>

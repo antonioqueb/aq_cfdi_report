@@ -143,6 +143,8 @@ class AccountMove(models.Model):
             return {}
 
         g = lambda n, a, d="": (n.get(a, d) if n is not None else d)
+        # Formatea importes/cantidades a 2 decimales; si no es numérico, lo deja igual.
+        m2 = lambda v: ("%.2f" % float(v)) if (v not in (None, "")) and self._aq_is_num(v) else v
         uuid = tfd.get("UUID", "")
         sello_cfdi = comp.get("Sello", "")
         rfc_emi = g(emi, "Rfc")
@@ -179,18 +181,18 @@ class AccountMove(models.Model):
                     "tipo_factor": t.get("TipoFactor", ""),
                     "tasa": tasa,
                     "tasa_disp": tasa_disp,
-                    "importe": t.get("Importe", ""),
+                    "importe": m2(t.get("Importe", "")),
                 })
             conceptos.append({
                 "clave_prod": c.get("ClaveProdServ", ""),
                 "no_id": c.get("NoIdentificacion", ""),
-                "cantidad": c.get("Cantidad", ""),
+                "cantidad": m2(c.get("Cantidad", "")),
                 "clave_unidad": c.get("ClaveUnidad", ""),
                 "unidad": c.get("Unidad", ""),
                 "descripcion": c.get("Descripcion", ""),
-                "valor_unitario": c.get("ValorUnitario", ""),
-                "importe": c.get("Importe", ""),
-                "descuento": c.get("Descuento", "") or "0.00",
+                "valor_unitario": m2(c.get("ValorUnitario", "")),
+                "importe": m2(c.get("Importe", "")),
+                "descuento": m2(c.get("Descuento", "") or "0.00"),
                 "objeto_imp": c.get("ObjetoImp", ""),
                 "traslados": traslados,
             })
@@ -262,12 +264,20 @@ class AccountMove(models.Model):
             "cadena_sat": cadena_sat,
             # Líneas ya cortadas para el PDF (wkhtmltopdf no rompe cadenas
             # largas sin espacios de forma confiable).
-            "sello_cfdi_lines": self._aq_split_text(sello_cfdi, 90),
-            "sello_sat_lines": self._aq_split_text(sello_sat, 90),
-            "cadena_sat_lines": self._aq_split_text(cadena_sat, 90),
+            "sello_cfdi_lines": self._aq_split_text(sello_cfdi, 115),
+            "sello_sat_lines": self._aq_split_text(sello_sat, 115),
+            "cadena_sat_lines": self._aq_split_text(cadena_sat, 115),
             "qr_value": qr_value,
             "qr_b64": self._aq_qr_b64(qr_value),
         }
+
+    def _aq_is_num(self, value):
+        """True si el valor se puede interpretar como número."""
+        try:
+            float(value)
+            return True
+        except (TypeError, ValueError):
+            return False
 
     def _aq_split_text(self, value, size=200):
         """Parte una cadena larga en líneas de ancho fijo para el PDF."""

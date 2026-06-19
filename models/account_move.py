@@ -222,6 +222,28 @@ class AccountMove(models.Model):
             for c in conceptos
         )
 
+        # Las secciones y notas de las líneas de Odoo no viajan en el XML del SAT,
+        # así que las intercalamos aquí con los conceptos del XML (en el orden de
+        # captura) para poder agrupar y detallar más allá de la descripción.
+        filas = []
+        idx = 0
+        for line in self.invoice_line_ids.sorted(lambda l: (l.sequence, l.id)):
+            if line.display_type == "line_section":
+                filas.append({"tipo_fila": "section", "texto": line.name or ""})
+            elif line.display_type == "line_note":
+                filas.append({"tipo_fila": "note", "texto": line.name or ""})
+            elif idx < len(conceptos):
+                fila = dict(conceptos[idx])
+                fila["tipo_fila"] = "concepto"
+                filas.append(fila)
+                idx += 1
+        # Conceptos del XML que no se hayan podido emparejar con una línea.
+        while idx < len(conceptos):
+            fila = dict(conceptos[idx])
+            fila["tipo_fila"] = "concepto"
+            filas.append(fila)
+            idx += 1
+
         cadena_sat = "||%s|%s|%s|%s|%s|%s||" % (
             tfd.get("Version", "1.1"),
             uuid,
@@ -288,6 +310,7 @@ class AccountMove(models.Model):
             "descuento": comp.get("Descuento", ""),
             "total": total,
             "conceptos": conceptos,
+            "filas": filas,
             "tiene_descuento": tiene_descuento,
             "cadena_sat": cadena_sat,
             # Líneas ya cortadas para el PDF (wkhtmltopdf no rompe cadenas

@@ -164,6 +164,9 @@
                         vertical-align: top; word-break: break-word; background: #ffffff; }
                     .aq-cpt .num { text-align: right; }
                     .aq-cpt .ctr { text-align: center; }
+                    .aq-cpt td.sec { background: #f1f1f3; font-weight: 700;
+                        text-transform: uppercase; letter-spacing: .3px; color: #000000; }
+                    .aq-cpt td.note { font-style: italic; color: #555555; }
                 </style>
 
                 <div class="aq-h">Conceptos</div>
@@ -184,20 +187,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr t-foreach="d_cfdi['conceptos']" t-as="c">
-                            <td class="ctr"><span t-esc="c['clave_prod']"/></td>
-                            <td><span t-esc="c['descripcion']"/></td>
-                            <td class="num"><span t-esc="c['cantidad']"/></td>
-                            <td><span t-esc="c['clave_unidad']"/> <span t-esc="c['unidad']"/></td>
-                            <td class="num"><span t-esc="c['valor_unitario']"/></td>
-                            <td class="num"><span t-esc="c['importe']"/></td>
-                            <td t-if="d_cfdi.get('tiene_descuento')" class="num"><span t-esc="c['descuento']"/></td>
-                            <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
-                            <td class="imp">
-                                <t t-foreach="c['traslados']" t-as="t">
-                                    <span t-esc="t['tasa_disp']"/><br/>
-                                </t>
-                            </td>
+                        <t t-set="cols" t-value="d_cfdi.get('tiene_descuento') and 9 or 8"/>
+                        <tr t-foreach="d_cfdi['filas']" t-as="c">
+                            <t t-if="c['tipo_fila'] == 'section'">
+                                <td class="sec" t-att-colspan="cols"><span t-esc="c['texto']"/></td>
+                            </t>
+                            <t t-elif="c['tipo_fila'] == 'note'">
+                                <td class="note" t-att-colspan="cols"><span t-esc="c['texto']"/></td>
+                            </t>
+                            <t t-else="">
+                                <td class="ctr"><span t-esc="c['clave_prod']"/></td>
+                                <td><span t-esc="c['descripcion']"/></td>
+                                <td class="num"><span t-esc="c['cantidad']"/></td>
+                                <td><span t-esc="c['clave_unidad']"/> <span t-esc="c['unidad']"/></td>
+                                <td class="num"><span t-esc="c['valor_unitario']"/></td>
+                                <td class="num"><span t-esc="c['importe']"/></td>
+                                <td t-if="d_cfdi.get('tiene_descuento')" class="num"><span t-esc="c['descuento']"/></td>
+                                <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
+                                <td class="imp">
+                                    <t t-foreach="c['traslados']" t-as="t">
+                                        <span t-esc="t['tasa_disp']"/><br/>
+                                    </t>
+                                </td>
+                            </t>
                         </tr>
                     </tbody>
                 </table>

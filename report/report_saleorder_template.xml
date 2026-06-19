@@ -33,6 +33,30 @@
                 .page .o_main_table thead th { background: #000000 !important; color: #ffffff !important;
                     border-color: #000000 !important; border-bottom: 2px solid #B9E856 !important;
                     text-transform: uppercase; letter-spacing: .3px; }
+
+                /* Líneas de SECCIÓN: barra lima + Bebas, igual que los títulos */
+                .page .o_main_table .o_line_section td,
+                .page .o_main_table tr.o_line_section td {
+                    background: #f1f1f3 !important; color: #000000 !important;
+                    font-family: 'Bebas Kai','Bebas Neue', sans-serif;
+                    font-weight: 700; text-transform: uppercase; letter-spacing: .6px;
+                    font-size: 12px; border-top: 2px solid #B9E856 !important;
+                    border-bottom: 1px solid #000000 !important; padding-top: 4px; padding-bottom: 4px; }
+
+                /* Líneas de NOTA: cursiva discreta */
+                .page .o_main_table .o_line_note td,
+                .page .o_main_table tr.o_line_note td {
+                    font-style: italic; color: #555555; background: #ffffff !important; }
+
+                /* Bloque de TOTALES */
+                .page #total { font-family: 'Oxanium', Arial, sans-serif; }
+                .page #total table { border-top: 2px solid #B9E856; }
+                .page #total .o_total,
+                .page #total tr.o_total td,
+                .page #total tr.border-black {
+                    background: #723FA0 !important; color: #ffffff !important;
+                    font-weight: 700; font-size: 13px; }
+                .page #total .o_total td { border-color: #723FA0 !important; }
             </style>
             <table class="aq-top"><tr><td class="l">&#160;</td><td class="p">&#160;</td></tr></table>
         </xpath>

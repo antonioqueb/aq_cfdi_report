@@ -178,7 +178,7 @@
                             <th style="width:11%">Unidad</th>
                             <th style="width:9%">V. unitario</th>
                             <th style="width:9%">Importe</th>
-                            <th style="width:7%">Desc.</th>
+                            <th t-if="d_cfdi.get('tiene_descuento')" style="width:7%">Desc.</th>
                             <th style="width:4%">Obj.</th>
                             <th style="width:9%">Impuestos</th>
                         </tr>
@@ -191,7 +191,7 @@
                             <td><span t-esc="c['clave_unidad']"/> <span t-esc="c['unidad']"/></td>
                             <td class="num"><span t-esc="c['valor_unitario']"/></td>
                             <td class="num"><span t-esc="c['importe']"/></td>
-                            <td class="num"><span t-esc="c['descuento']"/></td>
+                            <td t-if="d_cfdi.get('tiene_descuento')" class="num"><span t-esc="c['descuento']"/></td>
                             <td class="ctr"><span t-esc="c['objeto_imp']"/></td>
                             <td class="imp">
                                 <t t-foreach="c['traslados']" t-as="t">

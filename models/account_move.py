@@ -216,6 +216,12 @@ class AccountMove(models.Model):
                 "traslados": traslados,
             })
 
+        # Solo mostramos la columna "Desc." si algún concepto trae descuento > 0.
+        tiene_descuento = any(
+            self._aq_is_num(c["descuento"]) and float(c["descuento"]) != 0
+            for c in conceptos
+        )
+
         cadena_sat = "||%s|%s|%s|%s|%s|%s||" % (
             tfd.get("Version", "1.1"),
             uuid,
@@ -282,6 +288,7 @@ class AccountMove(models.Model):
             "descuento": comp.get("Descuento", ""),
             "total": total,
             "conceptos": conceptos,
+            "tiene_descuento": tiene_descuento,
             "cadena_sat": cadena_sat,
             # Líneas ya cortadas para el PDF (wkhtmltopdf no rompe cadenas
             # largas sin espacios de forma confiable).

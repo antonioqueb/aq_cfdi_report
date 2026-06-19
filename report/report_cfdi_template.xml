@@ -173,7 +173,7 @@
                         border: 1px solid #999; margin-bottom: 3px; }
                     .aq-qr { width: 74px; vertical-align: top; padding: 2px; }
                     .aq-qr img { width: 68px; height: 68px; }
-                    .aq-extra { vertical-align: top; font-size: 11px; line-height: 1.2; padding: 3px 5px; }
+                    .aq-extra { vertical-align: top; font-size: 13px; line-height: 1.9; padding: 5px 7px; }
                     .aq-seal-title { font-weight: bold; font-size: 11px; background: #eeeeee;
                         border: 1px solid #999; border-bottom: 0; padding: 2px 4px; margin-top: 2px; }
                     .aq-seal-text { font-family: monospace; font-size: 11px; line-height: 1.2;

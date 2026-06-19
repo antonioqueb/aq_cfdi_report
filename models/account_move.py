@@ -161,8 +161,9 @@ class AccountMove(models.Model):
             return {}
 
         g = lambda n, a, d="": (n.get(a, d) if n is not None else d)
-        # Formatea importes/cantidades a 2 decimales; si no es numérico, lo deja igual.
-        m2 = lambda v: ("%.2f" % float(v)) if (v not in (None, "")) and self._aq_is_num(v) else v
+        # Formatea importes/cantidades a 2 decimales con separador de miles (,)
+        # y punto decimal (estilo anglosajón); si no es numérico, lo deja igual.
+        m2 = lambda v: ("{:,.2f}".format(float(v))) if (v not in (None, "")) and self._aq_is_num(v) else v
         uuid = tfd.get("UUID", "")
         sello_cfdi = comp.get("Sello", "")
         rfc_emi = g(emi, "Rfc")
